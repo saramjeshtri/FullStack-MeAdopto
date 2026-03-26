@@ -51,7 +51,8 @@ export default function AdminReportsPage() {
     const params: any = {}
     if (filterStatus) params.status = filterStatus
     adminGetReports(params)
-      .then(setReports)
+      // ✅ FIX: handle both array response and wrapped object response
+      .then(data => setReports(Array.isArray(data) ? data : data.reports ?? data.data ?? []))
       .catch(() => {})
       .finally(() => setLoading(false))
   }
