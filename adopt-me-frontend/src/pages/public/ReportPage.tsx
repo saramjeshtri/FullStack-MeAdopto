@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { Shield, MapPin, Phone, Mail, Camera, ChevronRight, ChevronLeft, CheckCircle, AlertTriangle, Search, X, Image, Video, Siren, SearchX, Zap, HeartPulse, HeartCrack, ClipboardList } from 'lucide-react'
 import { createReport, uploadReportMedia } from '../../api/client'
 
@@ -124,11 +125,12 @@ export default function ReportPage() {
             <p className="max-w-lg mx-auto text-sm md:text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.85)' }}>
               Ndihmoni kafshët në nevojë. Raportet tuaja dërgohen automatikisht te departamenti i duhur i Bashkisë së Tiranës.
             </p>
-            <a href="/track"
+            {/* FIX 1: changed <a href="/track"> to <Link to="/track"> */}
+            <Link to="/track"
               className="inline-flex items-center gap-1.5 mt-5 text-xs font-semibold px-4 py-2 rounded-full transition-all hover:opacity-80"
               style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.9)', border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(8px)' }}>
               <Search size={12} /> Keni raportuar më parë? Gjurmoni statusin →
-            </a>
+            </Link>
           </div>
         </section>
       </FadeUp>
@@ -183,11 +185,12 @@ export default function ReportPage() {
                   <p className="text-xs" style={{ color: '#9ca3af' }}>Ruajeni këtë numër — do ta keni nevojë për të gjurmuar statusin</p>
                 </div>
               )}
-              <a href={`/track?id=${reportId}`}
+              {/* FIX 2: changed <a href={`/track?id=${reportId}`}> to <Link to={...}> */}
+              <Link to={`/track?id=${reportId}`}
                 className="flex items-center justify-center gap-2 w-full text-white px-6 py-4 rounded-2xl font-bold text-sm transition-all mb-3 hover:opacity-90"
                 style={{ backgroundColor: '#e02424', boxShadow: '0 4px 16px rgba(224,36,36,0.3)' }}>
                 <Search size={16} /> Gjurmo statusin e raportit tënd
-              </a>
+              </Link>
               <button onClick={() => {
                 setSubmitted(false); setReportId(null); setStep(0); setMediaFiles([])
                 setForm({ report_type: '', report_description: '', location_address: '', latitude: 41.3275, longitude: 19.8187, phoneNr: '', email: '', photoUrl: '' })
