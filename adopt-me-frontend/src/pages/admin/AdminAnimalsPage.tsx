@@ -63,7 +63,8 @@ export default function AdminAnimalsPage() {
     const params: any = {}
     if (filterAdoption) params.adoption_status = filterAdoption
     adminGetAnimals(params)
-      .then(setAnimals)
+      // ✅ FIX: handle both array response and wrapped object response
+      .then(data => setAnimals(Array.isArray(data) ? data : data.animals ?? data.data ?? []))
       .catch(() => {})
       .finally(() => setLoading(false))
   }

@@ -36,7 +36,8 @@ export default function AdminMeetingsPage() {
     const params: any = {}
     if (filterStatus) params.status = filterStatus
     adminGetMeetings(params)
-      .then(setMeetings)
+      // ✅ FIX: handle both array response and wrapped object response
+      .then(data => setMeetings(Array.isArray(data) ? data : data.meetings ?? data.data ?? []))
       .catch(() => {})
       .finally(() => setLoading(false))
   }
@@ -65,11 +66,9 @@ export default function AdminMeetingsPage() {
   const filtered = meetings.filter(m => {
     if (!search) return true
     const q = search.toLowerCase().trim()
-    // Exact ID match — typing "2" only shows meeting #2, not #12 or #20
     if (/^\d+$/.test(q)) {
       return String(m.meeting_id) === q
     }
-    // Otherwise match by name or email
     return (
       m.visitor_name.toLowerCase().includes(q) ||
       (m.visitor_email ?? '').toLowerCase().includes(q) ||
