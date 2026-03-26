@@ -39,12 +39,10 @@ export default function AdminSurrenderPage() {
   const [selected, setSelected]     = useState<Surrender | null>(null)
   const [toast, setToast]           = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
 
-  // Accept modal state
   const [acceptModal, setAcceptModal] = useState<Surrender | null>(null)
   const [acceptForm, setAcceptForm]   = useState({ name: '', health_status: 'Shëndetshëm', gender: 'E panjohur', description: '' })
   const [accepting, setAccepting]     = useState(false)
 
-  // Reject confirm
   const [rejectId, setRejectId] = useState<number | null>(null)
   const [rejectReason, setRejectReason] = useState("")
   const [rejecting, setRejecting] = useState(false)
@@ -57,7 +55,8 @@ export default function AdminSurrenderPage() {
   const load = () => {
     setLoading(true)
     adminGetSurrenders()
-      .then(setSurrenders)
+      // ✅ FIX: handle both array response and wrapped object response
+      .then(data => setSurrenders(Array.isArray(data) ? data : data.surrenders ?? data.data ?? []))
       .catch(() => {})
       .finally(() => setLoading(false))
   }
@@ -65,8 +64,8 @@ export default function AdminSurrenderPage() {
   useEffect(() => { load() }, [])
 
   const filtered = surrenders
-  .filter(s => filter === 'all' || s.status === filter)
-  .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .filter(s => filter === 'all' || s.status === filter)
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
   const handleContact = async (id: number) => {
     try {
@@ -108,7 +107,6 @@ export default function AdminSurrenderPage() {
 
   return (
     <div>
-      {/* Toast */}
       {toast && (
         <div className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-sm font-medium
           ${toast.type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
@@ -117,7 +115,6 @@ export default function AdminSurrenderPage() {
         </div>
       )}
 
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-white mb-1">Dhuro Kafshë</h1>
@@ -125,7 +122,6 @@ export default function AdminSurrenderPage() {
         </div>
       </div>
 
-      {/* Filter tabs */}
       <div className="flex gap-2 mb-6 flex-wrap">
         {[
           ['all', 'Të gjitha'],
@@ -147,7 +143,6 @@ export default function AdminSurrenderPage() {
         ))}
       </div>
 
-      {/* List */}
       {loading ? (
         <div className="text-center py-16 text-gray-500 text-sm">Duke ngarkuar...</div>
       ) : filtered.length === 0 ? (
@@ -186,7 +181,6 @@ export default function AdminSurrenderPage() {
                     <p className="text-xs text-gray-500 mt-1">Arsyeja: {s.reason}</p>
                   </div>
 
-                  {/* Actions */}
                   <div className="flex items-center gap-2 shrink-0 flex-wrap">
                     <button onClick={() => setSelected(s)}
                       className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 transition-all cursor-pointer border border-white/5">
@@ -218,7 +212,6 @@ export default function AdminSurrenderPage() {
         </div>
       )}
 
-      {/* Detail modal */}
       {selected && (
         <div className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center p-4 overflow-y-auto">
           <div className="w-full max-w-lg rounded-2xl border my-6" style={{ backgroundColor: '#1e293b', borderColor: '#334155' }}>
@@ -227,14 +220,12 @@ export default function AdminSurrenderPage() {
               <button onClick={() => setSelected(null)} className="text-gray-500 hover:text-white cursor-pointer p-1"><X size={20} /></button>
             </div>
             <div className="p-5 space-y-4">
-              {/* Owner */}
               <div>
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Pronari</p>
                 <p className="text-white font-semibold">{selected.owner_name}</p>
                 <p className="text-sm text-gray-400 flex items-center gap-1.5 mt-1"><Phone size={12} /> {selected.phone}</p>
                 {selected.email && <p className="text-sm text-gray-400 flex items-center gap-1.5 mt-0.5"><Mail size={12} /> {selected.email}</p>}
               </div>
-              {/* Animal */}
               <div>
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Kafsha</p>
                 <div className="grid grid-cols-2 gap-2 text-sm">
@@ -244,13 +235,11 @@ export default function AdminSurrenderPage() {
                   {selected.is_vaccinated && <div><span className="text-gray-500">Vaksinuar:</span> <span className="text-white">{selected.is_vaccinated}</span></div>}
                 </div>
               </div>
-              {/* Reason */}
               <div>
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Arsyeja</p>
                 <p className="text-sm text-white">{selected.reason}</p>
                 {selected.notes && <p className="text-sm text-gray-400 mt-1">{selected.notes}</p>}
               </div>
-              {/* Photos */}
               {selected.media.length > 0 && (
                 <div>
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Foto</p>
@@ -263,7 +252,6 @@ export default function AdminSurrenderPage() {
                 </div>
               )}
             </div>
-            {/* Actions inside modal */}
             {(selected.status === 'New' || selected.status === 'Contacted') && (
               <div className="flex gap-3 px-5 pb-5">
                 <button
@@ -281,7 +269,6 @@ export default function AdminSurrenderPage() {
         </div>
       )}
 
-      {/* Accept modal */}
       {acceptModal && (
         <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4">
           <div className="w-full max-w-md rounded-2xl border" style={{ backgroundColor: '#1e293b', borderColor: '#334155' }}>
@@ -306,8 +293,7 @@ export default function AdminSurrenderPage() {
                 <div>
                   <label className="text-xs text-gray-400 mb-1.5 block">Gjinia</label>
                   <div className="relative">
-                    <select value={acceptForm.gender} onChange={e => setAcceptForm(f => ({ ...f, gender: e.target.value }))}
-                      className={selectCls}>
+                    <select value={acceptForm.gender} onChange={e => setAcceptForm(f => ({ ...f, gender: e.target.value }))} className={selectCls}>
                       {GENDER_OPTIONS.map(g => <option key={g} value={g}>{g}</option>)}
                     </select>
                     <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
@@ -316,8 +302,7 @@ export default function AdminSurrenderPage() {
                 <div>
                   <label className="text-xs text-gray-400 mb-1.5 block">Shëndeti</label>
                   <div className="relative">
-                    <select value={acceptForm.health_status} onChange={e => setAcceptForm(f => ({ ...f, health_status: e.target.value }))}
-                      className={selectCls}>
+                    <select value={acceptForm.health_status} onChange={e => setAcceptForm(f => ({ ...f, health_status: e.target.value }))} className={selectCls}>
                       {HEALTH_OPTIONS.map(h => <option key={h} value={h}>{h}</option>)}
                     </select>
                     <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
@@ -348,7 +333,6 @@ export default function AdminSurrenderPage() {
         </div>
       )}
 
-      {/* Reject confirm */}
       {rejectId !== null && (
         <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4">
           <div className="w-full max-w-sm rounded-2xl border p-6" style={{ backgroundColor: '#1e293b', borderColor: '#334155' }}>
@@ -356,9 +340,7 @@ export default function AdminSurrenderPage() {
               <X size={22} className="text-red-400" />
             </div>
             <h3 className="text-white font-bold text-lg text-center mb-2">Refuzo kërkesën?</h3>
-            <p className="text-gray-400 text-sm text-center mb-4">
-'Shkruani arsyen e refuzimit (opsionale).'
-            </p>
+            <p className="text-gray-400 text-sm text-center mb-4">Shkruani arsyen e refuzimit (opsionale).</p>
             <div className="mb-4">
               <label className="text-xs text-gray-400 uppercase tracking-wide mb-1.5 block">Arsyeja e refuzimit</label>
               <textarea
