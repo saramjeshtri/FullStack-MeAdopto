@@ -1,0 +1,22 @@
+# Më Adopto 🐾
+
+A platform for the Municipality of Tirana (Bashkia e Tiranës) to modernize the management and public communication of animal welfare services.
+
+## About
+
+Më Adopto is a full-stack web platform developed for the Municipality of Tirana (Bashkia e Tiranës) to modernize the management and public communication of animal welfare services. The platform allows citizens to browse animals available for adoption, schedule adoption meetings, report cases of animal abuse or abandonment, and surrender pets they can no longer care for. On the administrative side, staff can manage animals, review and act on reports and surrender requests, organize public events, and publish educational content — all through a dedicated admin panel.
+
+Built with a FastAPI backend, React frontend, MySQL database, and Cloudinary for media storage, Më Adopto aims to bring transparency, accessibility, and efficiency to animal protection in Tirana.
+
+## Live Demo
+
+https://fullstack-meadopto-1.onrender.com/
+
+## Stack
+
+FastAPI · React · MySQL · Cloudinary
+
+## Structure
+
+adopt-me-backend/ # FastAPI API
+adopt-me-frontend/ # React app
