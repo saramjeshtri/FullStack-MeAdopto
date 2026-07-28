@@ -1,10 +1,14 @@
-MeAdopto Backend 🐾
+# MeAdopto Backend 🐾
 
 API for reporting animal welfare cases and adopting animals in Tirana.
 
-Stack
+## Stack
+
 Python · FastAPI · MySQL · Cloudinary · uv
 
-Run
+## Run
+
+```bash
 uv sync
 uvicorn app.main:app --reload
+```
